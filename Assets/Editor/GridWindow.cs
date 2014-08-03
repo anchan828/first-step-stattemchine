@@ -5,6 +5,8 @@ public class GridWindow : EditorWindow
 {
 
 	StateMachine stateMachine;
+	Vector2 scrollPosition = Vector2.zero;
+	float magnification = 2f;
 
 	[MenuItem("Window/GridWindow")]
 	static void Open ()
@@ -24,19 +26,25 @@ public class GridWindow : EditorWindow
 		Repaint ();
 	}
 
+
 	void OnGUI ()
 	{
+		var viewPosition = new Rect (0, 0, position.width, position.height);
+		var viewRect = new Rect (0, 0, position.width * magnification, position.height * magnification);
+		scrollPosition = GUI.BeginScrollView (viewPosition, scrollPosition, viewRect);
+
 		if (Event.current.type == EventType.Repaint)
-			Style.backgorund.Draw (new Rect (0, 0, position.width, position.height),
+			Style.backgorund.Draw (new Rect (0, 0, position.width * magnification, position.height * magnification),
 			                           false, false, false, false);
 
 		DrawGrid (12);
 
-		Toolbar.OnGUI (stateMachine);
-
 		BeginWindows ();
 		stateMachine.OnGUI ();
 		EndWindows ();
+
+		GUI.EndScrollView ();
+		Toolbar.OnGUI (stateMachine);
 	}
 
 	private void DrawGrid (float gridSize)
@@ -47,7 +55,11 @@ public class GridWindow : EditorWindow
 
 	private void DrawGridLines (float gridSize, Color gridColor)
 	{
-		float xMax = position.width * 5, xMin = 0, yMax = position.height * 5, yMin = 0;
+		float xMin = 0;
+		float yMin = 0;
+		float xMax = position.width * magnification;
+		float yMax = position.height * magnification;
+
 		Handles.color = gridColor;
 		float x = xMin - xMin % gridSize;
 		while (x < xMax) {
