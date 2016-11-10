@@ -33,8 +33,8 @@ public class Style
 			if (m_state == null) {
 				m_state = "window";
 				var stateImage = AssetDatabase.LoadAssetAtPath("Assets/Editor/state.png",typeof(Texture2D)) as Texture2D;
-				m_state.normal.background =  stateImage;
-				m_state.onNormal.background = stateImage;
+				m_state.normal.scaledBackgrounds =  new Texture2D[]{stateImage};
+				m_state.onNormal.scaledBackgrounds =  new Texture2D[]{stateImage};
 			}
 			return m_state;
 		}
